@@ -1,1 +1,56 @@
-hellow  MouseBlink
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My first Three.js app</title>
+    <style>
+      body { margin: 0; }
+      canvas { display: block; }
+    </style>
+  </head>
+  <body>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script src="https://threejs.org/examples/jsm/controls/DragControls.js"></script>
+    <script>
+      let camera, scene, renderer;
+      let controls, group;
+
+      init();
+      animate();
+
+      function init() {
+        camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
+
+        scene = new THREE.Scene();
+        group = new THREE.Group();
+        scene.add( group );
+
+        let geometry = new THREE.BoxGeometry( 1, 1, 1 );
+
+        for ( let i = 0; i < 200; i ++ ) {
+          let object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
+          object.position.x = Math.random() * 100;
+          object.position.y = Math.random() * 100;
+          object.position.z = Math.random() * 100;
+          group.add( object );
+        }
+
+        renderer = new THREE.WebGLRenderer( { antialias: true } );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        document.body.appendChild( renderer.domElement );
+
+        controls = new THREE.DragControls( group.children, camera, renderer.domElement );
+        controls.addEventListener( 'dragstart', function ( event ) { event.object.material.emissive.set( 0xaaaaaa ); } );
+        controls.addEventListener( 'dragend', function ( event ) { event.object.material.emissive.set( 0x000000 ); } );
+      }
+
+      function animate() {
+        requestAnimationFrame( animate );
+        render();
+      }
+
+      function render() {
+        renderer.render( scene, camera );
+      }
+    </script>
+  </body>
+</html>
